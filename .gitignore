@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Vim
+[._]*.swp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.coverage
+dist/
