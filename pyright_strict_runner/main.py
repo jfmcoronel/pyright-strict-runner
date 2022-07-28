@@ -5,8 +5,6 @@ import tempfile
 import tokenize
 from typing import Optional, Sequence
 
-import typer
-
 from .project_types import CompileError, CompileSuccess
 
 
@@ -169,7 +167,3 @@ def process_main(path: str, pyright_path: str, python_path: str):
 
 def main(path: str, pyright: str = 'pyright', python: str = 'python3'):
     process_main(path, pyright, python)
-
-
-if __name__ == '__main__':
-    typer.run(main)
