@@ -3,9 +3,6 @@ name = "pyright_strict_runner"
 version = "0.1.0"
 description = "Command-line executable for enforcing strict mode checking of Pyright"
 authors = ["Juan Felipe Coronel <juanfelipe.coronel@gmail.com>"]
-packages = [
-  { include = "src" }
-]
 
 [tool.poetry.dependencies]
 python = "^3.10"
