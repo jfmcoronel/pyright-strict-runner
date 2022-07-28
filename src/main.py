@@ -12,6 +12,7 @@ from .project_types import CompileError, CompileSuccess
 
 def validate_comments(code: str) -> Sequence[CompileError]:
     """Determines whether the given source code contains any Pyright-disabling comments
+
     Parameters
     ----------
     code : str
@@ -49,6 +50,7 @@ def validate_comments(code: str) -> Sequence[CompileError]:
 
 def validate_comments_from_path(path: str) -> Sequence[CompileError]:
     """Determines whether the source code in the given path contains any Pyright-disabling comments
+
     Parameters
     ----------
     path : str
@@ -76,11 +78,6 @@ def execute_python(src_path: str, python_path: str) -> None:
     python_path : str
         Path to Python executable
     """
-
-    # subprocess.run([python_path, src_path], text=True)
-    # subprocess.run([python_path, src_path], text=True, stdin=0)
-    # subprocess.run([python_path, src_path], text=True, stdin=subprocess.PIPE)
-    # proc = subprocess.Popen(executable=python_path, args=[src_path], stdin=subprocess.PIPE, universal_newlines=True)
 
     subprocess.run([python_path, src_path], text=True)
 
@@ -130,7 +127,8 @@ def validate_pyright_from_path(path: str, pyright_path: str) -> Optional[Compile
         augmented_code = '# pyright: strict\n' + f.read()
 
     temp_src_file = tempfile.NamedTemporaryFile(
-        suffix='.py')  # To be seen by Pyright
+        suffix='.py')  # Suffix needed to be seen by Pyright
+
     # typer.echo(f'Created temporary file at {temp_src_file.name}')
 
     with open(temp_src_file.name, 'w') as f:
