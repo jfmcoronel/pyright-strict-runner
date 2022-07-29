@@ -2,13 +2,13 @@ import os
 
 import pytest
 
-from src.main import (
+from pyright_strict_runner.main import (
     execute_python,
     process_main,
     validate_comments_from_path,
     validate_pyright_from_path,
 )
-from src.project_types import CompileError, CompileSuccess
+from pyright_strict_runner.project_types import CompileError, CompileSuccess
 
 BASE_PATH = os.path.join('tests', 'examples')
 PYRIGHT_PATH = 'pyright'
