@@ -15,10 +15,10 @@ jobs:
         with:
           python-version: 3.10.5
 
-      - uses: jakebailey/pyright-action@v1
-
       - uses: snok/install-poetry@v1
 
       - run: poetry install --no-interaction --no-root
+
+      - uses: jakebailey/pyright-action@v1
 
       - run: poetry run pytest
