@@ -1,6 +1,6 @@
 # pyright-strict-runner
 
-[![Tests Status](https://github.com/jfmcoronel/pyright-strict-runner/workflows/Tests/badge.svg?branch=master&event=push)](https://github.com/jfmcoronel/pyright-strict-runner/actions?query=workflow%3ATests+branch%3Amaster+event%3Apush)
+[![Tests Status](https://github.com/jfmcoronel/pyright-strict-runner/workflows/Tests/badge.svg?branch=main&event=push)](https://github.com/jfmcoronel/pyright-strict-runner/actions?query=workflow%3ATests+branch%3Amain+event%3Apush)
 
 `pyright-strict-runner` executes only Pyright strict mode-compliant Python scripts to be executed. Scripts with Pyright-disabling comments are also denied execution.
 
