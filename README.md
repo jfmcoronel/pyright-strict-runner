@@ -12,7 +12,7 @@ https://github.com/microsoft/pyright
 ## Installation
 
 ```
-pip install -e git+https://github.com/jfmcoronel/pyright-strict-runner
+pip install git+https://github.com/jfmcoronel/pyright-strict-runner
 ```
 
 ## Usage
