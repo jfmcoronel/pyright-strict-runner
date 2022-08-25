@@ -1,3 +1,4 @@
+import ast
 from io import BytesIO
 import subprocess
 import sys
@@ -139,6 +140,55 @@ def validate_pyright_from_path(path: str, pyright_path: str) -> Optional[Compile
     return result
 
 
+def validate_any_from_path(path: str) -> Optional[CompileSuccess]:
+    """Determines whether the source code in the given path is free from `Any` annotation
+
+    Parameters
+    ----------
+    path : str
+        Path to source file to validate
+
+    Returns
+    -------
+    Optional[CompileSuccess]
+        CompileSuccess if code is free from `Any`, or None otherwise
+    """
+
+    def token_to_error(token: tuple[int, str, object, object, object]) -> Optional[CompileError]:
+        token_type, token_value, _, _, _ = token
+
+        if token_type != tokenize.COMMENT:
+            return None
+        else:
+            trimmed_text = token_value.replace(' ', '')
+
+            if trimmed_text.startswith('#type:') and 'Any' in trimmed_text:
+                return CompileError.AnyAnnotationError
+
+            else:
+                return None
+
+    def has_any_annotation(code: str):
+        tree = ast.parse(code)
+
+        for node in ast.walk(tree):
+            # Side-effect: Disallows classes to be called `Any`
+            if isinstance(node, ast.Name) and node.id == 'Any':
+                return True
+
+    with open(path, 'r') as f:
+        code = f.read()
+
+    tokens = tokenize.tokenize(BytesIO(code.encode('utf8')).readline)
+    comment_errors = [token_to_error(token) for token in tokens]
+    comment_errors = [error for error in comment_errors if error is not None]
+    has_ast_errors = has_any_annotation(code)
+
+    result = None if comment_errors or has_ast_errors else CompileSuccess()
+
+    return result
+
+
 def process_main(path: str, pyright_path: str, python_path: str):
     """Determines whether the source code in the given path is both Pyright
        strict mode-compliant and contains no Pyright-disabling constructs
@@ -161,6 +211,11 @@ def process_main(path: str, pyright_path: str, python_path: str):
     if pyright_result is None:
         sys.exit(
             'Error: Type error detected by Pyright; kindly check Pyright feedback locally')
+
+    any_result = validate_any_from_path(path)
+    if any_result is None:
+        sys.exit(
+            'Error: Remove all `Any` annotations')
 
     execute_python(path, python_path)
 

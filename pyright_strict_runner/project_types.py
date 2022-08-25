@@ -12,6 +12,7 @@ class CompileError(Enum):
     PyrightIgnoreError = auto()
     TypeIgnoreError = auto()
     PyrightTypeError = auto()
+    AnyAnnotationError = auto()
 
 
 CompileResult = Union[CompileSuccess, Sequence[CompileError]]
