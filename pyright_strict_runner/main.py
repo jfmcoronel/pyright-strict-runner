@@ -189,7 +189,36 @@ def validate_any_from_path(path: str) -> Optional[CompileSuccess]:
     return result
 
 
-def process_main(path: str, pyright_path: str, python_path: str):
+def validate_iteration_from_path(path: str) -> Optional[CompileSuccess]:
+    """Determines whether the source code in the given path is free from `for` and `while` loops
+
+    Parameters
+    ----------
+    path : str
+        Path to source file to validate
+
+    Returns
+    -------
+    Optional[CompileSuccess]
+        CompileSuccess if code is free from `for` and `while` loops, or None otherwise
+    """
+
+    def has_iteration_construct(code: str):
+        tree = ast.parse(code)
+
+        for node in ast.walk(tree):
+            if isinstance(node, ast.For) or isinstance(node, ast.While):
+                return True
+
+    with open(path, 'r') as f:
+        code = f.read()
+
+    result = None if has_iteration_construct(code) else CompileSuccess()
+
+    return result
+
+
+def process_main(path: str, pyright_path: str, python_path: str, forbid_iteration: bool = False):
     """Determines whether the source code in the given path is both Pyright
        strict mode-compliant and contains no Pyright-disabling constructs
 
@@ -201,6 +230,8 @@ def process_main(path: str, pyright_path: str, python_path: str):
         Path to Pyright executable file
     python_path : str
         Path to Python executable file
+    forbid_iteration : bool
+        Determines whether `for` and `while` constructs are disallowed
     """
 
     comment_errors = validate_comments_from_path(path)
@@ -217,8 +248,13 @@ def process_main(path: str, pyright_path: str, python_path: str):
         sys.exit(
             'Error: Remove all `Any` annotations')
 
+    if forbid_iteration:
+        iteration_result = validate_iteration_from_path(path)
+        if iteration_result is None:
+            sys.exit('Error: Remove all `for` and `while` loops')
+
     execute_python(path, python_path)
 
 
-def main(path: str, pyright: str = 'pyright', python: str = 'python3'):
-    process_main(path, pyright, python)
+def main(path: str, pyright: str = 'pyright', python: str = 'python3', forbid_iteration: bool = False):
+    process_main(path, pyright, python, forbid_iteration)
