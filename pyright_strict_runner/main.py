@@ -218,7 +218,7 @@ def validate_iteration_from_path(path: str) -> Optional[CompileSuccess]:
     return result
 
 
-def process_main(path: str, pyright_path: str, python_path: str, forbid_iteration: bool = False):
+def process_main(path: str, pyright_path: str, python_path: str, forbid_iteration: bool = False, disable_pyright: bool = False):
     """Determines whether the source code in the given path is both Pyright
        strict mode-compliant and contains no Pyright-disabling constructs
 
@@ -232,21 +232,24 @@ def process_main(path: str, pyright_path: str, python_path: str, forbid_iteratio
         Path to Python executable file
     forbid_iteration : bool
         Determines whether `for` and `while` constructs are disallowed
+    disable_pyright : bool
+        Determines whether Pyright should be executed
     """
 
-    comment_errors = validate_comments_from_path(path)
-    if comment_errors:
-        sys.exit('Error: Pyright-disabling comment in code; kindly remove this')
+    if not disable_pyright:
+        comment_errors = validate_comments_from_path(path)
+        if comment_errors:
+            sys.exit('Error: Pyright-disabling comment in code; kindly remove this')
 
-    pyright_result = validate_pyright_from_path(path, pyright_path)
-    if pyright_result is None:
-        sys.exit(
-            'Error: Type error detected by Pyright; kindly check Pyright feedback locally')
+        pyright_result = validate_pyright_from_path(path, pyright_path)
+        if pyright_result is None:
+            sys.exit(
+                'Error: Type error detected by Pyright; kindly check Pyright feedback locally')
 
-    any_result = validate_any_from_path(path)
-    if any_result is None:
-        sys.exit(
-            'Error: Remove all `Any` annotations')
+        any_result = validate_any_from_path(path)
+        if any_result is None:
+            sys.exit(
+                'Error: Remove all `Any` annotations')
 
     if forbid_iteration:
         iteration_result = validate_iteration_from_path(path)
@@ -256,5 +259,5 @@ def process_main(path: str, pyright_path: str, python_path: str, forbid_iteratio
     execute_python(path, python_path)
 
 
-def main(path: str, pyright: str = 'pyright', python: str = 'python3', forbid_iteration: bool = False):
-    process_main(path, pyright, python, forbid_iteration)
+def main(path: str, pyright: str = 'pyright', python: str = 'python3', forbid_iteration: bool = False, disable_pyright: bool = False):
+    process_main(path, pyright, python, forbid_iteration, disable_pyright)

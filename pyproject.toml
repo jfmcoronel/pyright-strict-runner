@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyright_strict_runner"
-version = "0.2.0"
+version = "0.3.0"
 description = "Command-line executable for enforcing strict mode checking of Pyright"
 authors = ["Juan Felipe Coronel <juanfelipe.coronel@gmail.com>"]
 
